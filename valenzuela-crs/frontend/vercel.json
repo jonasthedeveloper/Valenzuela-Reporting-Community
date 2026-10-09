@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://valenzuela-reporting-api.vercel.app/api/:path*"
+      "destination": "https://valenzuela-reporting-community.vercel.app/api/:path*"
     },
     {
       "source": "/uploads/:path*",
-      "destination": "https://valenzuela-reporting-api.vercel.app/uploads/:path*"
+      "destination": "https://valenzuela-reporting-community.vercel.app/uploads/:path*"
     },
     {
       "source": "/(.*)",
