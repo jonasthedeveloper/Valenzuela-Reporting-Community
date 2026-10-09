@@ -7,6 +7,7 @@ const morgan = require('morgan');
 
 const env = require('./config/env');
 const routes = require('./routes');
+const { serveUploads } = require('./services/storage.service');
 const { apiLimiter } = require('./middleware/rateLimit');
 const { sanitizeBody } = require('./utils/sanitize');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
@@ -67,6 +68,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   maxAge: '7d',
   setHeaders: (res) => res.setHeader('X-Content-Type-Options', 'nosniff'),
 }));
+
+// Cloud-storage mode: nothing lives on disk, so stream /uploads from the bucket.
+// (In local mode this is not mounted and the static handler above is the only one.)
+if (env.storage.driver === 's3') app.use('/uploads', serveUploads);
 
 app.use('/api', apiLimiter, routes);
 

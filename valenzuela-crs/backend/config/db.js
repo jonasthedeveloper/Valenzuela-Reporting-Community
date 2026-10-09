@@ -1,5 +1,16 @@
+const fs = require('fs');
+const path = require('path');
 const mysql = require('mysql2/promise');
 const env = require('./env');
+
+// Optional TLS (DB_SSL / DB_SSL_CA). When DB_SSL is unset, `ssl` is omitted
+// entirely so the pool is configured exactly as before.
+const ssl = env.db.ssl
+  ? {
+      ...env.db.ssl,
+      ...(env.db.sslCaFile ? { ca: fs.readFileSync(path.resolve(env.db.sslCaFile), 'utf8') } : {}),
+    }
+  : undefined;
 
 const pool = mysql.createPool({
   host: env.db.host,
@@ -12,6 +23,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
   dateStrings: false,
   charset: 'utf8mb4_unicode_ci',
+  ...(ssl ? { ssl } : {}),
 });
 
 /** Run a parameterised query. Never build SQL with string concatenation. */
