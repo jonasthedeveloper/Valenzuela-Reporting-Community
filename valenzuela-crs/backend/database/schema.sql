@@ -161,7 +161,8 @@ CREATE TABLE announcements (
   body        TEXT         NOT NULL,
   type        ENUM('announcement','event','advisory') NOT NULL DEFAULT 'announcement',
   status      ENUM('draft','published','scheduled') NOT NULL DEFAULT 'draft',
-  barangay    ENUM('Ugong','Gen. T. De Leon') NULL,   -- NULL = both barangays  publish_at  DATETIME         NULL,
+  barangay    ENUM('Ugong','Gen. T. De Leon') NULL,   -- NULL = both barangays
+  publish_at  DATETIME         NULL,
   image_path  VARCHAR(255)     NULL,      -- uploaded announcement image (/uploads/announcements/...)
   is_anonymous TINYINT(1)      NOT NULL DEFAULT 0,  -- public name shown as "Anonymous"
   created_at  DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
