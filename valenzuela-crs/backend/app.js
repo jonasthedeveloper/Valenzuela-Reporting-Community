@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
@@ -74,6 +75,17 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 if (env.storage.driver === 's3') app.use('/uploads', serveUploads);
 
 app.use('/api', apiLimiter, routes);
+
+// SPA shell at the site root.
+// On Vercel the exact "/" path reaches this function (the CDN rewrite for
+// "/" doesn't fire), so serve the built frontend here instead of a JSON 404.
+// Locally this makes http://localhost:5050/ serve the app too. Any other
+// unmatched path still falls through to the JSON 404 below.
+const spaIndex = path.join(__dirname, 'public', 'index.html');
+app.get('/', (_req, res, next) => {
+  if (!fs.existsSync(spaIndex)) return next();
+  return res.sendFile(spaIndex);
+});
 
 app.use(notFound);
 app.use(errorHandler);
